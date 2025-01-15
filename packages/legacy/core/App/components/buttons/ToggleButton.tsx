@@ -1,5 +1,11 @@
 import React, { useState, useEffect } from 'react'
-import { Pressable, Animated } from 'react-native'
+import { Pressable, StyleSheet } from 'react-native'
+import Animated, {
+  useSharedValue,
+  useAnimatedStyle,
+  withTiming,
+  interpolateColor
+} from 'react-native-reanimated';
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import { useTheme } from '../../contexts/theme'
 import { useTranslation } from 'react-i18next'
@@ -24,25 +30,28 @@ const ToggleButton: React.FC<ToggleButtonProps> = ({
   disabled = false,
 }) => {
   const { ColorPallet } = useTheme()
-  const [toggleAnim] = useState(new Animated.Value(isEnabled ? 1 : 0))
   const { t } = useTranslation()
 
-  useEffect(() => {
-    Animated.timing(toggleAnim, {
-      toValue: isEnabled ? 1 : 0,
-      duration: 200,
-      useNativeDriver: true,
-    }).start()
-  }, [isEnabled, toggleAnim])
+  const backgroundColor = useSharedValue(0);
+  backgroundColor.value = isEnabled ? 1 : 0;
 
-  const backgroundColor = toggleAnim.interpolate({
-    inputRange: [0, 1],
-    outputRange: [ColorPallet.grayscale.lightGrey, ColorPallet.brand.primary],
+  const offset = useSharedValue(isEnabled ? 24 : 0);
+  offset.value = withTiming(isEnabled ? 24 : 0, { duration: 200 })
+
+  const animatedBackgroundStyles = useAnimatedStyle(() => {
+    return {
+      backgroundColor: interpolateColor(
+        backgroundColor.value,
+        [0, 1],
+        [ColorPallet.grayscale.mediumGrey, ColorPallet.brand.primary]
+      ),
+    }
   })
 
-  const translateX = toggleAnim.interpolate({
-    inputRange: [0, 1],
-    outputRange: [2, 25],
+  const animatedIconContainerStyles= useAnimatedStyle(() => {
+    return {
+      transform: [{ translateX: offset.value }],
+    }
   })
 
   return (
@@ -58,26 +67,10 @@ const ToggleButton: React.FC<ToggleButtonProps> = ({
       disabled={!isAvailable || disabled}
     >
       <Animated.View
-        style={{
-          width: 55,
-          height: 30,
-          borderRadius: 25,
-          backgroundColor,
-          padding: 3,
-          justifyContent: 'center',
-          opacity: disabled ? 0.5 : 1, // Visual feedback for disabled state
-        }}
+        style={[styles.background, animatedBackgroundStyles]}
       >
         <Animated.View
-          style={{
-            transform: [{ translateX }],
-            width: 25,
-            height: 25,
-            borderRadius: 20,
-            backgroundColor: '#FFFFFF',
-            justifyContent: 'center',
-            alignItems: 'center',
-          }}
+          style={[styles.iconContainer, animatedIconContainerStyles]}
         >
           <Icon
             name={isEnabled ? enabledIcon : disabledIcon}
@@ -89,5 +82,24 @@ const ToggleButton: React.FC<ToggleButtonProps> = ({
     </Pressable>
   )
 }
+
+const styles = StyleSheet.create({
+  background: {
+    width: 55,
+    height: 30,
+    borderRadius: 25,
+    padding: 3,
+    justifyContent: 'center',
+    // opacity: disabled ? 0.5 : 1, // Visual feedback for disabled state
+  },
+  iconContainer: {
+    width: 25,
+    height: 25,
+    borderRadius: 20,
+    backgroundColor: '#FFFFFF',
+    justifyContent: 'center',
+    alignItems: 'center',
+  }
+})
 
 export default ToggleButton

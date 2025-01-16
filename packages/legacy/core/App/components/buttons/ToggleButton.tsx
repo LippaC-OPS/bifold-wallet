@@ -3,8 +3,10 @@ import { Pressable, StyleSheet } from 'react-native'
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
+  useDerivedValue,
   withTiming,
-  interpolateColor
+  interpolateColor,
+  runOnJS
 } from 'react-native-reanimated';
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import { useTheme } from '../../contexts/theme'
@@ -32,11 +34,8 @@ const ToggleButton: React.FC<ToggleButtonProps> = ({
   const { ColorPallet } = useTheme()
   const { t } = useTranslation()
 
-  const backgroundColor = useSharedValue(0);
-  backgroundColor.value = isEnabled ? 1 : 0;
-
-  const offset = useSharedValue(isEnabled ? 24 : 0);
-  offset.value = withTiming(isEnabled ? 24 : 0, { duration: 200 })
+  const backgroundColor = useSharedValue(0)
+  const iconContainerOffset = useSharedValue(1)
 
   const animatedBackgroundStyles = useAnimatedStyle(() => {
     return {
@@ -48,11 +47,17 @@ const ToggleButton: React.FC<ToggleButtonProps> = ({
     }
   })
 
-  const animatedIconContainerStyles= useAnimatedStyle(() => {
+  const animatedIconContainerStyles = useAnimatedStyle(() => {
     return {
-      transform: [{ translateX: offset.value }],
+      transform: [{ translateX: withTiming(iconContainerOffset.value, { duration: 200 }) }],
     }
   })
+
+  useEffect(() => {
+    iconContainerOffset.value = isEnabled ? 24 : 0
+    backgroundColor.value = isEnabled ? 1 : 0
+  }, [isEnabled])
+
 
   return (
     <Pressable

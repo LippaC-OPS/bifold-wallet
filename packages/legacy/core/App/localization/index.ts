@@ -4,9 +4,9 @@ import * as RNLocalize from 'react-native-localize'
 import { PersistentStorage } from '../services/storage'
 import { LocalStorageKeys } from '../constants'
 
-import en from './en'
-import fr from './fr'
-import ptBr from './pt-br'
+import en from './en/translation-en.json'
+import fr from './fr/translation-fr.json'
+import ptBr from './pt-br/translation-pt-br.json'
 
 export type Translation = typeof en
 

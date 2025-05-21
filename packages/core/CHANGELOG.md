@@ -1,5 +1,12 @@
 # @bifold/core
 
+## 2.1.3
+
+### Patch Changes
+
+- 271cea1: pin accessability improvements
+- 11670da: fix an issue with lockout and pickup changes to directory casing
+
 ## 2.1.2
 
 ### Patch Changes

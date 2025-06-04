@@ -1,5 +1,11 @@
 # @bifold/core
 
+## 2.1.6
+
+### Patch Changes
+
+- ab196c9: changed accessibility labels in the actions slider in the chat screen
+
 ## 2.1.5
 
 ### Patch Changes

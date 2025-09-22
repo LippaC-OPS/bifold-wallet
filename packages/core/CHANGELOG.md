@@ -1,5 +1,12 @@
 # @bifold/core
 
+## 2.7.5
+
+### Patch Changes
+
+- 53169b9: fix: biometrics not triggering after app is backgrounded
+- 07ea6be: fix: unique banner messages
+
 ## 2.7.4
 
 ### Patch Changes

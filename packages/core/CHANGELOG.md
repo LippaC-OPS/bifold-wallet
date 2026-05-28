@@ -1,5 +1,11 @@
 # @bifold/core
 
+## 3.0.11
+
+### Patch Changes
+
+- @bifold/react-hooks@3.0.11
+
 ## 3.0.10
 
 ### Patch Changes
